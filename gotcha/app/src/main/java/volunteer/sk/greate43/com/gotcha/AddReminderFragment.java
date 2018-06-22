@@ -1,5 +1,6 @@
 package volunteer.sk.greate43.com.gotcha;
 
+
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -8,11 +9,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -25,11 +29,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,42 +41,63 @@ import com.google.firebase.storage.StorageReference;
 
 import static android.app.Activity.RESULT_OK;
 
+
 /**
- * Created by Aspire v5-573G on 4/2/2018.
+ * A simple {@link Fragment} subclass.
  */
-
-public class Map_fragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks
+public class AddReminderFragment extends DialogFragment implements GoogleApiClient.ConnectionCallbacks
         , GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener, LocationListener {
-    private static final String TAG = "Map_fragment";
-    private static final int REQUEST_FINE_LOCATION_PERMISSION = 111;
-
-    public Map_fragment() {
-    }
-
+    private static final int REQUEST_FINE_LOCATION_PERMISSION = 231;
     FirebaseAuth mAuth;
     FirebaseUser user;
     DatabaseReference mDatabaseReference;
     FirebaseDatabase database;
     FirebaseStorage mStorage;
     StorageReference storageRef;
-    private GoogleMap mMap;
+
+    static AddReminderFragment newInstance() {
+        AddReminderFragment f = new AddReminderFragment();
+
+        // Supply num input as an argument.
+//        Bundle args = new Bundle();
+//
+//        f.setArguments(args);
+
+        return f;
+    }
+
     private Location mLastLocation;
     private boolean mLocationUpdateState;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private int REQUEST_CHECK_SETTINGS = 2;
 
-
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View myview = inflater.inflate(R.layout.home_fragment, container, false);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        int theme = 0;
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
         mStorage = FirebaseStorage.getInstance();
         mDatabaseReference = database.getReference();
         storageRef = mStorage.getReference();
+        setStyle(DialogFragment.STYLE_NORMAL, theme);
+
+    }
+
+    public AddReminderFragment() {
+        // Required empty public constructor
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_add_reminder, container, false);
+        EditText editText = view.findViewById(R.id.etReminderName);
+        Button button = view.findViewById(R.id.saveReminder);
 
         if (mGoogleApiClient == null) {
             if (getActivity() != null)
@@ -88,55 +109,24 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
         }
         createLocationRequest();
 
+        button.setOnClickListener(v -> {
+            String pushId = String.valueOf(mDatabaseReference.push().getKey());
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
-                .findFragmentById(R.id.map);
+            String reminder = editText.getText().toString();
+            if (mLastLocation != null && reminder != null) {
+                Reminder rem = new Reminder();
+                rem.setReminderName(reminder);
+                rem.setLat(mLastLocation.getLatitude());
+                rem.setLon(mLastLocation.getLongitude());
+                rem.setReminderId(pushId);
+                mDatabaseReference.child(Constants.REMINDER).child(pushId).setValue(rem);
+                dismiss();
+            }
 
-
-        mapFragment.getMapAsync(this);
-
-        return myview;
+        });
+        return view;
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        setupGoogleMapScreenSettings(googleMap);
-        //positionCamera(mMap);
-
-    }
-
-    private void setupGoogleMapScreenSettings(GoogleMap mMap) {
-        mMap.setBuildingsEnabled(true);
-        mMap.setIndoorEnabled(false);
-        mMap.setTrafficEnabled(false);
-        UiSettings mUiSettings = mMap.getUiSettings();
-        mUiSettings.setZoomControlsEnabled(true);
-        mUiSettings.setCompassEnabled(true);
-        mUiSettings.setMyLocationButtonEnabled(true);
-        mUiSettings.setScrollGesturesEnabled(true);
-        mUiSettings.setZoomGesturesEnabled(true);
-        mUiSettings.setTiltGesturesEnabled(true);
-        mUiSettings.setRotateGesturesEnabled(true);
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        Log.d(TAG, "onLocationChanged: " + location.getLatitude());
-        LatLng currentLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation
-                .getLongitude());
-        positionCamera(mMap,currentLocation);
-    }
-
-    private void positionCamera(GoogleMap mMap, LatLng currentLocation) {
-        try {
-            if (currentLocation != null)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 16));
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            ex.printStackTrace();
-        }
-    }
 
     @Override
     public void onStart() {
@@ -172,11 +162,6 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
 
     }
 
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        return false;
-    }
-
     private void setUpMap() {
         if (getActivity() != null)
             if (ActivityCompat.checkSelfPermission(getActivity(),
@@ -188,18 +173,12 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
                 return;
             }
 
-        mMap.setMyLocationEnabled(true);
 
         LocationAvailability locationAvailability =
                 LocationServices.FusedLocationApi.getLocationAvailability(mGoogleApiClient);
         if (locationAvailability != null && locationAvailability.isLocationAvailable()) {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if (mLastLocation != null) {
-                LatLng currentLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation
-                        .getLongitude());
-                positionCamera(mMap,currentLocation);
 
-            }
         }
     }
 
@@ -292,5 +271,18 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
         if (mGoogleApiClient.isConnected() && !mLocationUpdateState) {
             startLocationUpdates();
         }
+    }
+
+    private static final String TAG = "AddReminderFragment";
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
     }
 }
