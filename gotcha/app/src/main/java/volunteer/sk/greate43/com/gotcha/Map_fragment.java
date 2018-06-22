@@ -25,6 +25,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -39,6 +40,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import static android.app.Activity.RESULT_OK;
+
 /**
  * Created by Aspire v5-573G on 4/2/2018.
  */
@@ -65,10 +67,11 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
     private int REQUEST_CHECK_SETTINGS = 2;
     private String userType;
     private String price;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-       View myview = inflater.inflate(R.layout.home_fragment, container, false);
+        View myview = inflater.inflate(R.layout.home_fragment, container, false);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
@@ -84,6 +87,7 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
                         .addApi(LocationServices.API)
                         .build();
         }
+        createLocationRequest();
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
@@ -99,10 +103,11 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         setupGoogleMapScreenSettings(googleMap);
+        //positionCamera(mMap);
 
     }
 
-    private void setupGoogleMapScreenSettings( GoogleMap mMap) {
+    private void setupGoogleMapScreenSettings(GoogleMap mMap) {
         mMap.setBuildingsEnabled(true);
         mMap.setIndoorEnabled(false);
         mMap.setTrafficEnabled(false);
@@ -115,10 +120,23 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
         mUiSettings.setTiltGesturesEnabled(true);
         mUiSettings.setRotateGesturesEnabled(true);
     }
+
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         Log.d(TAG, "onLocationChanged: " + location.getLatitude());
+        LatLng currentLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation
+                .getLongitude());
+        positionCamera(mMap,currentLocation);
+    }
+
+    private void positionCamera(GoogleMap mMap, LatLng currentLocation) {
+        try {
+            if (currentLocation != null)
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 16));
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -180,7 +198,8 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
             if (mLastLocation != null) {
                 LatLng currentLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation
                         .getLongitude());
-                
+                positionCamera(mMap,currentLocation);
+
             }
         }
     }
