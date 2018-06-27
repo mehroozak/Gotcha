@@ -3,6 +3,7 @@ package volunteer.sk.greate43.com.gotcha;
 import android.app.Activity;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,12 +42,15 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
     StorageReference storageRef;
     private final LayoutInflater layoutInflater;
     ArrayList<FriendList> mFriendLists;
+    static Boolean showButton;
+    private static FriendList mList;
 
     public ArrayList<FriendList> getFriendLists() {
         return mFriendLists;
     }
 
-    public FriendListAdapter(Activity activity) {
+    public FriendListAdapter(Activity activity, boolean b) {
+        showButton = b;
         mActivity = activity;
         layoutInflater = activity.getLayoutInflater();
         mFriendLists = new ArrayList<>();
@@ -70,8 +75,8 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
         if (mFriendLists == null || mFriendLists.size() == 0) {
 
         } else {
-            FriendList list = mFriendLists.get(position);
-            mDatabaseReference.child(Constants.PROFILE).orderByChild(Constants.userId).equalTo(list.getUserId()).addValueEventListener(new ValueEventListener() {
+            mList = mFriendLists.get(position);
+            mDatabaseReference.child(Constants.PROFILE).orderByChild(Constants.userId).equalTo(mList.getUserId()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -86,22 +91,40 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
                 }
             });
 
+            if (!showButton) {
+                ViewHolder.no.setVisibility(View.GONE);
+                ViewHolder.yes.setVisibility(View.GONE);
+
+            }
+
             ViewHolder.no.setOnClickListener(v -> {
 
-                mDatabaseReference.child(Constants.FRIEND_LIST).child(list.getPushId()).updateChildren(update(list,false,true));
+                mDatabaseReference.child(Constants.FRIEND_LIST).child(mList.getPushId()).updateChildren(update(false, true));
 
             });
 
-            ViewHolder.no.setOnClickListener(v -> {
-                mDatabaseReference.child(Constants.FRIEND_LIST).child(list.getPushId()).updateChildren(update(list,true,false));
+            ViewHolder.yes.setOnClickListener(v -> {
+                String pushId = mDatabaseReference.push().getKey();
+
+                FriendList friendList = new FriendList();
+                friendList.setFriendId(mList.getUserId());
+                friendList.setPushId(pushId);
+                friendList.setUserId(mList.getFriendId());
+                friendList.setRequestAlreadySent(true);
+                friendList.setFriendRequestAccepted(true);
+
+
+                mDatabaseReference.child(Constants.FRIEND_LIST).child(Objects.requireNonNull(pushId)).setValue(friendList);
+
+                mDatabaseReference.child(Constants.FRIEND_LIST).child(mList.getPushId()).updateChildren(update(true, false));
             });
         }
     }
 
-    private Map<String, Object> update(FriendList list, Boolean isAccepted, Boolean isRejected) {
+    private Map<String, Object> update(Boolean isAccepted, Boolean isRejected) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(Constants.isFriendRequestAccepted, isAccepted);
-        hashMap.put(Constants.isFriendRequestRejected, isAccepted);
+        hashMap.put(Constants.isFriendRequestRejected, isRejected);
 
         return hashMap;
     }
@@ -138,6 +161,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
         ViewHolder.email.setText(email);
         ViewHolder.name.setText(firstName);
+
 
         setProfileImage(Uri.parse(profileUrl));
 
@@ -185,7 +209,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         static TextView name;
         static TextView email;
         static CircleImageView pic;
@@ -200,7 +224,15 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
             yes = itemView.findViewById(R.id.yes);
             no = itemView.findViewById(R.id.no);
 
+            if (!showButton) {
+                itemView.setOnClickListener(this);
+            }
 
+        }
+
+        @Override
+        public void onClick(View v) {
+            Snackbar.make(name, mList.getFriendId(),Snackbar.LENGTH_LONG ).show();
         }
     }
 

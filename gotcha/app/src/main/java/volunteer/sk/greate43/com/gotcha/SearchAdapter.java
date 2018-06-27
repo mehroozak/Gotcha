@@ -83,6 +83,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
 
                 mDatabaseReference.child(Constants.FRIEND_LIST).child(Objects.requireNonNull(pushId)).setValue(friendList);
+                holder.send.setEnabled(false);
+                holder.send.setText("Request Sent");
+
 
             });
 

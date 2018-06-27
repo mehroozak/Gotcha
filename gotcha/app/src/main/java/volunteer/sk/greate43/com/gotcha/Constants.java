@@ -20,10 +20,10 @@ public interface Constants {
 
     String pushId = "pushId";
     String friendId = "friendId";
-    String isFriendRequestAccepted = "isFriendRequestAccepted";
-    String isRequestAlreadySent = "isRequestAlreadySent";
+    String isFriendRequestAccepted = "friendRequestAccepted";
+    String isRequestAlreadySent = "requestAlreadySent";
     String FRIEND_LIST = "friendList";
-    String isFriendRequestRejected = "isFriendRequestRejected";
+    String isFriendRequestRejected = "friendRequestRejected";
 
 
 }

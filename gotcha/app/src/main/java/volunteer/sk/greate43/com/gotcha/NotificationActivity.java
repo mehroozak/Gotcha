@@ -49,7 +49,7 @@ public class NotificationActivity extends AppCompatActivity {
         storageRef = mStorage.getReference();
         recyclerView = findViewById(R.id.notification_recycler_view);
 
-        adaptor = new FriendListAdapter(this);
+        adaptor = new FriendListAdapter(this, true);
 
         mFriendLists = adaptor.getFriendLists();
 
