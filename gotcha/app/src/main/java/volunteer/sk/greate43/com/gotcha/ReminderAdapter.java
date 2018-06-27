@@ -50,7 +50,7 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.ViewHo
                 ) {
             return mReminders.size();
         } else {
-            return 1;
+            return 0;
         }
     }
 

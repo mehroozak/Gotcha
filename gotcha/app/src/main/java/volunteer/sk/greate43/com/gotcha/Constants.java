@@ -16,4 +16,14 @@ public interface Constants {
     String lat = "lat";
     String lon = "lon";
 
+    String MAX_UNI_CODE_LIMIT = "\uf8ff";
+
+    String pushId = "pushId";
+    String friendId = "friendId";
+    String isFriendRequestAccepted = "isFriendRequestAccepted";
+    String isRequestAlreadySent = "isRequestAlreadySent";
+    String FRIEND_LIST = "friendList";
+    String isFriendRequestRejected = "isFriendRequestRejected";
+
+
 }
