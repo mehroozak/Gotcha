@@ -210,6 +210,14 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        Activity mActivity;
+        FirebaseAuth mAuth;
+        FirebaseUser user;
+        DatabaseReference mDatabaseReference;
+        FirebaseDatabase database;
+        FirebaseStorage mStorage;
+        StorageReference storageRef;
+
         static TextView name;
         static TextView email;
         static CircleImageView pic;
@@ -232,7 +240,45 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
         @Override
         public void onClick(View v) {
+
+            mAuth = FirebaseAuth.getInstance();
+            user = mAuth.getCurrentUser();
+            database = FirebaseDatabase.getInstance();
+            mStorage = FirebaseStorage.getInstance();
+            mDatabaseReference = database.getReference();
+            storageRef = mStorage.getReference();
+
             Snackbar.make(name, mList.getFriendId(),Snackbar.LENGTH_LONG ).show();
+            String friendId_for_Locatoion = mList.getFriendId();
+            mDatabaseReference.child(Constants.PROFILE).orderByChild(user.getUid()).equalTo(friendId_for_Locatoion)
+                    .addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() != null) {
+
+                        collectProfile((Map<String, Object>) dataSnapshot.getValue());
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    System.out.println("The read failed: " + databaseError.getCode());
+                }
+            });
+
+
+        }
+        private void collectProfile(@NonNull Map<String, Object> value) {
+            String Latitude = null;
+            if (value.get(Constants.lat) != null)
+                Latitude = String.valueOf(value.get(Constants.lat));
+            String Longitude = null;
+            if (value.get(Constants.lastName) != null)
+                Latitude = String.valueOf(value.get(Constants.lon));
+            String Name = null;
+            if (value.get(Constants.firstName) !=null)
+                Name=String.valueOf(value.get(Constants.firstName));
+
         }
     }
 

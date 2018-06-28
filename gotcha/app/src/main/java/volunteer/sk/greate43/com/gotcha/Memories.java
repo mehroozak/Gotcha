@@ -15,7 +15,7 @@ public class Memories {
         return memoryId;
     }
 
-    public void setEmail(String memoryId) {
+    public void setMemoryId(String memoryId) {
         this.memoryId = memoryId;
     }
 
