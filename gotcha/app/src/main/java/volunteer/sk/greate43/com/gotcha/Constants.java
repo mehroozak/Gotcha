@@ -7,6 +7,7 @@ public interface Constants {
     String userId = "userId";
     String email = "email";
 
+    String MEEMORIES = "memories";
     String PROFILE = "profile";
     String PHOTOS = "Photos";
 
@@ -25,5 +26,6 @@ public interface Constants {
     String FRIEND_LIST = "friendList";
     String isFriendRequestRejected = "friendRequestRejected";
 
-
+    String memoriesId = "memoriesId";
+    String memoriesName = "memories name";
 }

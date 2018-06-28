@@ -9,6 +9,8 @@ public class Profile implements Serializable {
     private String profilePicUrl;
     private String email;
     private String userId;
+    private double lat;
+    private double lon;
 
     public Profile() {
     }
@@ -51,5 +53,21 @@ public class Profile implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
     }
 }

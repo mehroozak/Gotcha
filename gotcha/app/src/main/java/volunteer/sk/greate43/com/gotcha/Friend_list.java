@@ -4,11 +4,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,14 +25,13 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
-import java.util.zip.InflaterInputStream;
 
 /**
  * Created by Aspire v5-573G on 4/2/2018.
  */
 
-public class gallery_fragment extends Fragment {
-    private static final String Tag ="gallery_fragment";
+public class Friend_list extends Fragment {
+    private static final String Tag ="friend_list";
     FirebaseAuth mAuth;
     FirebaseUser user;
     DatabaseReference mDatabaseReference;
@@ -48,7 +45,7 @@ public class gallery_fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view=inflater.inflate(R.layout.gallery_fragment,container,false);
+        View view=inflater.inflate(R.layout.friend_list,container,false);
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();

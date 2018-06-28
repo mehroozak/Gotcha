@@ -1,7 +1,6 @@
 package volunteer.sk.greate43.com.gotcha;
 
 import android.app.SearchManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -18,8 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.Objects;
-
-import static android.support.v4.view.MenuItemCompat.getActionView;
 
 public class home2 extends AppCompatActivity {
 
@@ -101,7 +97,7 @@ public class home2 extends AppCompatActivity {
                     Map_fragment hf = new Map_fragment();
                     return hf;
                 case 1:
-                    gallery_fragment gf = new gallery_fragment();
+                    Friend_list gf = new Friend_list();
                     return gf;
                 case 2:
                     Reminder_fragment rf = new Reminder_fragment();

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -50,6 +51,8 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
     private static final String TAG = "Map_fragment";
     private static final int REQUEST_FINE_LOCATION_PERMISSION = 111;
 
+
+    private Button add_memories;
     public Map_fragment() {
     }
 
@@ -65,12 +68,15 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private int REQUEST_CHECK_SETTINGS = 2;
+    double latitude,longitude;
+    Profile profile;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View myview = inflater.inflate(R.layout.home_fragment, container, false);
+        add_memories=(Button)myview.findViewById(R.id.add_memories_btn);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
@@ -124,9 +130,21 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         Log.d(TAG, "onLocationChanged: " + location.getLatitude());
-        LatLng currentLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation
-                .getLongitude());
+        latitude=mLastLocation.getLatitude();
+        longitude=mLastLocation.getLongitude();
+        LatLng currentLocation = new LatLng(latitude,longitude);
         positionCamera(mMap,currentLocation);
+        updateServerLocation(user.getUid(),latitude,longitude);
+    }
+
+    private void updateServerLocation(String uid, double latitude, double longitude) {
+       if(uid!=null) {
+           profile = new Profile();
+           profile.setUserId(uid);
+           profile.setLat(latitude);
+           profile.setLon(longitude);
+           mDatabaseReference.child(Constants.PROFILE).child(uid).setValue(profile);
+       }
     }
 
     private void positionCamera(GoogleMap mMap, LatLng currentLocation) {
