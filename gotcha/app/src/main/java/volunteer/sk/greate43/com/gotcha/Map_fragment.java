@@ -28,6 +28,7 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
@@ -77,7 +78,7 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View myview = inflater.inflate(R.layout.home_fragment, container, false);
 
-        Button add_memories=(Button)myview.findViewById(R.id.add_memories_btn);
+       // Button add_memories=(Button)myview.findViewById(R.id.add_memories_btn);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
@@ -101,12 +102,7 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
 
 
         mapFragment.getMapAsync(this);
-        add_memories.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-            }
-        });
         return myview;
     }
 
