@@ -34,12 +34,15 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.jar.Attributes;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -314,5 +317,24 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
         if (mGoogleApiClient.isConnected() && !mLocationUpdateState) {
             startLocationUpdates();
         }
+    }
+    public void Friend_location_Marker(String Latitude,String Longitude,String Name) {
+        Double Lat = null,Lon= null;
+        String name=null;
+
+        if(Latitude != null){
+            Lat=Double.parseDouble(Latitude);
+        }
+        if (Longitude != null) {
+            Lon = Double.parseDouble(Longitude);
+        }
+        if (Name != null) {
+            name = Name;
+        }
+        if(mMap != null){
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng( Lat , Lon), 16));
+            mMap.addMarker(new MarkerOptions().position(new LatLng(Lat,Lon)).title(name));
+        }
+
     }
 }

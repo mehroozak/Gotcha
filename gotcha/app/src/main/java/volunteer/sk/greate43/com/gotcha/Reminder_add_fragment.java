@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -32,7 +31,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,7 +45,7 @@ import static android.app.Activity.RESULT_OK;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddReminderFragment extends DialogFragment implements GoogleApiClient.ConnectionCallbacks
+public class Reminder_add_fragment extends DialogFragment implements GoogleApiClient.ConnectionCallbacks
         , GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener, LocationListener {
     private static final int REQUEST_FINE_LOCATION_PERMISSION = 231;
     FirebaseAuth mAuth;
@@ -57,8 +55,8 @@ public class AddReminderFragment extends DialogFragment implements GoogleApiClie
     FirebaseStorage mStorage;
     StorageReference storageRef;
 
-    static AddReminderFragment newInstance() {
-        AddReminderFragment f = new AddReminderFragment();
+    static Reminder_add_fragment newInstance() {
+        Reminder_add_fragment f = new Reminder_add_fragment();
 
         // Supply num input as an argument.
 //        Bundle args = new Bundle();
@@ -88,7 +86,7 @@ public class AddReminderFragment extends DialogFragment implements GoogleApiClie
 
     }
 
-    public AddReminderFragment() {
+    public Reminder_add_fragment() {
         // Required empty public constructor
     }
 
@@ -97,7 +95,7 @@ public class AddReminderFragment extends DialogFragment implements GoogleApiClie
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_add_reminder, container, false);
+        View view = inflater.inflate(R.layout.reminder_add_fragment, container, false);
         EditText editText = view.findViewById(R.id.etReminderName);
         Button button = view.findViewById(R.id.saveReminder);
 
@@ -277,7 +275,7 @@ public class AddReminderFragment extends DialogFragment implements GoogleApiClie
         }
     }
 
-    private static final String TAG = "AddReminderFragment";
+    private static final String TAG = "Reminder_add_fragment";
 
     @Override
     public void onLocationChanged(Location location) {

@@ -1,7 +1,7 @@
 package volunteer.sk.greate43.com.gotcha;
 
 public class Memories {
-
+    private String  MemoryName;
     private String memoryId;
     private double lat;
     private double lon;
@@ -10,6 +10,9 @@ public class Memories {
         //empty constructor
     }
 
+    public String getMemoryName() { return MemoryName;    }
+
+    public void setMemoryName(String memoryName) { MemoryName = memoryName;    }
 
     public String getMemoryId() {
         return memoryId;

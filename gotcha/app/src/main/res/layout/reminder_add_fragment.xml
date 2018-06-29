@@ -5,7 +5,7 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddReminderFragment">
+    tools:context=".Reminder_add_fragment">
 
     <!-- TODO: Update blank fragment layout -->
 

@@ -279,6 +279,8 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
             if (value.get(Constants.firstName) !=null)
                 Name=String.valueOf(value.get(Constants.firstName));
 
+            Map_fragment mp=new Map_fragment();
+            mp.Friend_location_Marker(Latitude,Longitude,Name);
         }
     }
 

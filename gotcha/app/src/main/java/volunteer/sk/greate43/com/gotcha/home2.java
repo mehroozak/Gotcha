@@ -105,6 +105,9 @@ public class home2 extends AppCompatActivity {
                 case 3:
                     profile_fragment pf = new profile_fragment();
                     return pf;
+                case 4:
+                    Memories_fragment mf = new Memories_fragment();
+                    return mf;
                 default:
                     return null;
             }
@@ -113,7 +116,7 @@ public class home2 extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 4;
+            return 5;
         }
 
         @Override
@@ -127,6 +130,9 @@ public class home2 extends AppCompatActivity {
                     return "Reminder";
                 case 3:
                     return "Profile";
+                case 4:
+                    return "Memories";
+
             }
             return null;
         }
