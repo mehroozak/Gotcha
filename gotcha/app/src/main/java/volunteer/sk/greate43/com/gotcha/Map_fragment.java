@@ -37,11 +37,16 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.jar.Attributes;
 
 import static android.app.Activity.RESULT_OK;
@@ -60,13 +65,13 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
     public Map_fragment() {
     }
 
-    FirebaseAuth mAuth;
-    FirebaseUser user;
-    DatabaseReference mDatabaseReference;
-    FirebaseDatabase database;
-    FirebaseStorage mStorage;
-    StorageReference storageRef;
-    private GoogleMap mMap;
+   static FirebaseAuth mAuth;
+   static FirebaseUser user;
+   static DatabaseReference mDatabaseReference;
+   static FirebaseDatabase database;
+   static FirebaseStorage mStorage;
+  static   StorageReference storageRef;
+    private static GoogleMap mMap;
     private Location mLastLocation;
     private boolean mLocationUpdateState;
     private LocationRequest mLocationRequest;
@@ -106,7 +111,53 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
 
         mapFragment.getMapAsync(this);
 
+        detectMyFriend();
         return myview;
+    }
+
+    private static void detectMyFriend() {
+
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        database = FirebaseDatabase.getInstance();
+        mStorage = FirebaseStorage.getInstance();
+        mDatabaseReference = database.getReference();
+        storageRef = mStorage.getReference();
+
+        if (friendId!=null) {
+            mDatabaseReference.child(Constants.LIVE_LOCATION_UPDATES).orderByChild(Constants.userId).equalTo(friendId)
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getValue() != null) {
+
+                                collectProfile((Map<String, Object>) dataSnapshot.getValue());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            System.out.println("The read failed: " + databaseError.getCode());
+                        }
+                    });
+        }
+
+    }
+
+    private static void collectProfile(@NonNull Map<String, Object> value) {
+        double Latitude = 0;
+        if (value.get(Constants.lat) != null)
+            Latitude = Double.parseDouble(String.valueOf(value.get(Constants.lat)));
+        double Longitude = 0;
+        if (value.get(Constants.lon) != null)
+            Latitude = Double.parseDouble(String.valueOf(value.get(Constants.lon)));
+
+
+//            Map_fragment mp=new Map_fragment();
+//            mp.Friend_location_Marker(Latitude,Longitude,Name);
+        if (mMap!=null) {
+            mMap.addMarker(new MarkerOptions().position(new LatLng(Latitude, Longitude)).title("dd"));
+        }
     }
 
     @Override
@@ -141,17 +192,26 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
         LatLng currentLocation = new LatLng(latitude,longitude);
 
         positionCamera(mMap,currentLocation);
-        updateServerLocation(user.getUid(),latitude,longitude);
+        updateServerLocation(user.getUid(),mLastLocation.getLatitude(),mLastLocation.getLongitude());
     }
 
     private void updateServerLocation(String uid, double latitude, double longitude) {
        if(uid!=null) {
-           profile = new Profile();
-           profile.setUserId(uid);
-           profile.setLat(latitude);
-           profile.setLon(longitude);
-           mDatabaseReference.child(Constants.PROFILE).child(uid).setValue(profile);
+//           profile = new Profile();
+//           profile.setUserId(uid);
+//           profile.setLat(latitude);
+//           profile.setLon(longitude);
+           mDatabaseReference.child(Constants.LIVE_LOCATION_UPDATES).child(uid).updateChildren(uplocation(uid,latitude,longitude));
        }
+    }
+
+    private Map<String, Object> uplocation(String uid, double latitude, double longitude) {
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put(Constants.userId,uid);
+        hashMap.put(Constants.lat,latitude);
+        hashMap.put(Constants.lon,longitude);
+        return  hashMap;
+
     }
 
     private void positionCamera(GoogleMap mMap, LatLng currentLocation) {
@@ -318,23 +378,11 @@ public class Map_fragment extends Fragment implements OnMapReadyCallback, Google
             startLocationUpdates();
         }
     }
-    public void Friend_location_Marker(String Latitude,String Longitude,String Name) {
-        Double Lat = null,Lon= null;
-        String name=null;
 
-        if(Latitude != null){
-            Lat=Double.parseDouble(Latitude);
-        }
-        if (Longitude != null) {
-            Lon = Double.parseDouble(Longitude);
-        }
-        if (Name != null) {
-            name = Name;
-        }
-        if(mMap != null){
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng( Lat , Lon), 16));
-            mMap.addMarker(new MarkerOptions().position(new LatLng(Lat,Lon)).title(name));
-        }
+   static String friendId = null;
+    public static void Friend_location_Marker(String friendId_for_locatoion) {
+         friendId = friendId_for_locatoion;
 
+         detectMyFriend();
     }
 }

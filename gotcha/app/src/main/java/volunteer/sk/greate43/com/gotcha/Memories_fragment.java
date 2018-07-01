@@ -111,7 +111,7 @@ public class Memories_fragment extends android.support.v4.app.Fragment {
     private void collectMemory(@NonNull Map<String, Object> value) {
         Memories memories = new Memories();
         String memoryName = null;
-        if (value.get(Constants.reminderName) != null)
+        if (value.get(Constants.memoriesName) != null)
             memoryName = String.valueOf(value.get(Constants.memoriesName));
 
         memories.setMemoryName(memoryName);
@@ -132,7 +132,7 @@ public class Memories_fragment extends android.support.v4.app.Fragment {
         ft.addToBackStack(null);
 
         // Create and show the dialog.
-        DialogFragment newFragment = Reminder_add_fragment.newInstance();
+        DialogFragment newFragment = memories_add_fragment.newInstance();
         newFragment.show(ft, "dialog");
     }
 }

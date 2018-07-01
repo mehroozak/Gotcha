@@ -14,8 +14,9 @@
         >
 
         <de.hdodenhof.circleimageview.CircleImageView
+
             android:id="@+id/uplload_memory_picture"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
@@ -75,7 +76,7 @@
 
         <Button
             android:id="@+id/button_save_memory"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
