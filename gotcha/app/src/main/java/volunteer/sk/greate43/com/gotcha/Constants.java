@@ -28,6 +28,7 @@ public interface Constants {
 
     String memoriesId = "memoriesId";
     String memoriesName = "memories name";
+    String memoryPicUrl = "memoryPicUrl";
 
     String LIVE_LOCATION_UPDATES = "LIVE_LOCATION_UPDATES";
 }

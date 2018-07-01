@@ -5,10 +5,15 @@ public class Memories {
     private String memoryId;
     private double lat;
     private double lon;
+    private String memoryPicUrl;
 
     public Memories(){
         //empty constructor
     }
+
+    public String getMemoryPicUrl() { return memoryPicUrl; }
+
+    public void setMemoryPicUrl(String memoryPicUrl) { this.memoryPicUrl = memoryPicUrl; }
 
     public String getMemoryName() { return MemoryName;    }
 
