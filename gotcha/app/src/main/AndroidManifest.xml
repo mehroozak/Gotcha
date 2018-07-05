@@ -34,7 +34,7 @@
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <meta-data
-            android:name="com.google.android.geo.API_KEY"
+            android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDfHHidHG4GUmdLsnEN9KpGgyR0vtjgP9Q" />
 
         <activity
@@ -71,9 +71,8 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="volunteer.sk.greate43.com.gotcha.home2" />
-
-
         </activity>
+        <activity android:name=".ShowPicture"></activity>
     </application>
 
 </manifest>

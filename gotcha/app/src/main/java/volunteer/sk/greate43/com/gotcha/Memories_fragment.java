@@ -45,8 +45,8 @@ public class Memories_fragment extends android.support.v4.app.Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.memories_fragment,container,false);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup memcontainer, Bundle savedInstanceState) {
+        View view=inflater.inflate(R.layout.memories_fragment,memcontainer,false);
 
         Button add=(Button)view.findViewById(R.id.addMemories);
 

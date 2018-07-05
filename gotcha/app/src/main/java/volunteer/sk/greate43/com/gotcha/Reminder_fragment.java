@@ -44,13 +44,13 @@ public class Reminder_fragment extends Fragment {
     ReminderAdapter mReminderAdapter;
     private ReminderAdapter adaptor;
     private ArrayList<Reminder> mReminders;
-
+    static int ID;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.reminder_fragment, container, false);
         Button add =  view.findViewById(R.id.addReminder);
-
+        ID=container.getId();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();

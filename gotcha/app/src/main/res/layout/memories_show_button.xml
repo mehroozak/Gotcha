@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    android:orientation="vertical">
+    <Button
+        android:id="@+id/btn_show_memories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Show Memories"
+        android:layout_margin="50dp"/>
+
+    <Button
+        android:id="@+id/btn_show_Location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Show Location"
+        android:layout_margin="50dp"/>
+
+
+
+
+</LinearLayout>

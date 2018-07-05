@@ -1,13 +1,21 @@
 package volunteer.sk.greate43.com.gotcha;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,7 +56,8 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
     ArrayList<FriendList> mFriendLists;
     static Boolean showButton;
     private static FriendList mList;
-
+    FragmentTransaction t;
+    ViewGroup mviewGroup;
 
 
     public ArrayList<FriendList> getFriendLists() {
@@ -67,6 +76,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
         mDatabaseReference = database.getReference();
         storageRef = mStorage.getReference();
     }
+
 
     @NonNull
     @Override
@@ -245,21 +255,38 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
         }
 
+
         @Override
         public void onClick(View v) {
 
 
-            Snackbar.make(name, mList.getFriendId(), Snackbar.LENGTH_LONG).show();
-            String friendId_for_Locatoion = mList.getFriendId();
+
+            Snackbar.make(name, mList.getUserId(), Snackbar.LENGTH_LONG).show();
+           /* String friendId_for_Locatoion = mList.getFriendId();
 
             Map_fragment mp=new Map_fragment();
+            mp.Friend_location_Marker(friendId_for_Locatoion);*/
+           /* Map_fragment mp=new Map_fragment();
+            DialogFragment myfrag= memories_show_buttons.newinstance();
+            AppCompatActivity appCompatActivity=(AppCompatActivity) v.getContext();
+            appCompatActivity.getSupportFragmentManager().beginTransaction().replace(rm.ID,mp).addToBackStack(null).commit();*/
+           /* AppCompatActivity appCompatActivity=(AppCompatActivity) v.getContext();
+           FragmentTransaction ft=Objects.requireNonNull(appCompatActivity.getSupportFragmentManager().beginTransaction());
+            Fragment prev = appCompatActivity.getSupportFragmentManager().findFragmentByTag("mem_dialog");
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            ft.addToBackStack(null);
 
-//            FragmentManager manager = mActivity.getFragmentManager();
-//            FragmentTransaction transaction = manager.beginTransaction();
-//            transaction.add(R.id.container,mp,YOUR_FRAGMENT_STRING_TAG);
-//            transaction.addToBackStack(null);
-//            transaction.commit();
-            mp.Friend_location_Marker(friendId_for_Locatoion);
+            DialogFragment newfrag=memories_show_buttons.newInstance();
+            newfrag.show(ft,"mem_dialog");*/
+
+
+            Intent intent=new Intent(v.getContext(),ShowPicture.class);
+            intent.putExtra("id",mList.getUserId());
+            v.getContext().startActivity(intent);
+
+
         }
 
 

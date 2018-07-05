@@ -156,6 +156,7 @@ public class memories_add_fragment extends DialogFragment implements GoogleApiCl
 
         button.setOnClickListener(v -> {
             String pushId = String.valueOf(user.getUid());
+            String uniqueId= String.valueOf(mDatabaseReference.push().getKey());
 
             String memories = editText.getText().toString();
 
@@ -163,7 +164,7 @@ public class memories_add_fragment extends DialogFragment implements GoogleApiCl
 
             if (mLastLocation != null && memories != null && imgUri != null) {
 
-                saveMyMemory(pushId,mLastLocation,memories,imgUri,v);
+                saveMyMemory(pushId,uniqueId,mLastLocation,memories,imgUri,v);
                 dismiss();
             }else if (imgUri == null){
                 Snackbar.make(viewSnackBar, "Please Select the image ", Snackbar.LENGTH_SHORT).show();
@@ -177,7 +178,7 @@ public class memories_add_fragment extends DialogFragment implements GoogleApiCl
         return view;
     }
 
-    private void saveMyMemory(String pushId, Location mLastLocation, String memories, Uri imgUri, View v) {
+    private void saveMyMemory(String pushId, String uniqueId, Location mLastLocation, String memories, Uri imgUri, View v) {
 
         imgMemoriesPicture.setDrawingCacheEnabled(true);
         imgMemoriesPicture.buildDrawingCache();
@@ -185,7 +186,7 @@ public class memories_add_fragment extends DialogFragment implements GoogleApiCl
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
-        final StorageReference ref = storageRef.child(Constants.PHOTOS).child(pushId).child(pushId);
+        final StorageReference ref = storageRef.child(Constants.PHOTOS).child(pushId).child(uniqueId);
 
         UploadTask uploadTask = ref.putBytes(data);
         Task<Uri> urlTask = uploadTask.continueWithTask(task -> {
@@ -204,9 +205,9 @@ public class memories_add_fragment extends DialogFragment implements GoogleApiCl
                 mem.setMemoryName(memories);
                 mem.setLat(mLastLocation.getLatitude());
                 mem.setLon(mLastLocation.getLongitude());
-                mem.setMemoryId(pushId);
+                mem.setMemoryId(uniqueId);
                 mem.setMemoryPicUrl(String.valueOf(downloadUri));
-                mDatabaseReference.child(Constants.MEEMORIES).child(pushId).setValue(mem);
+                mDatabaseReference.child(Constants.MEEMORIES).child(pushId).child(uniqueId).setValue(mem);
 
 
 
